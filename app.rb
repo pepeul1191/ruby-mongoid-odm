@@ -21,7 +21,7 @@ class Location
   key :provincia_id, String
 end
 
-def query
+def list
   begin
     locations = Location.all(:tipo => 'departamento')
     locations.each do |doc|
@@ -36,4 +36,70 @@ def query
   end
 end
 
-query
+def aggregation
+  search = 'La V'
+  pipeline = [
+    {
+      '$match' =>  {
+        'tipo' =>  'distrito'
+      }
+    },
+    {
+      '$lookup' =>  {
+        'from' =>  'ubicaciones',
+        'localField' =>  'provincia_id',
+        'foreignField' =>  '_id',
+        'as' =>  'provincia'
+      }
+    },
+    {
+      '$unwind' =>  {
+        'path' =>  '$provincia',
+        'preserveNullAndEmptyArrays' =>  true
+      }
+    },
+    {
+      '$lookup' =>  {
+        'from' =>  'ubicaciones',
+        'localField' =>  'provincia.departamento_id',
+        'foreignField' =>  '_id',
+        'as' =>  'departamento'
+      }
+    },
+    {
+      '$unwind' =>  {
+        'path' =>  '$departamento',
+        'preserveNullAndEmptyArrays' =>  true
+      }
+    },
+    {
+      '$match' => {
+        'departamento.pais_id' =>  BSON::ObjectId.from_string('5b90a5b1ef627560f1251e4d'),
+        'nombre' =>  {
+          '$regex' =>  '^' + search
+        }
+      }
+    },
+    {
+      '$project' =>  {
+        '_id' =>  '$_id',
+        'nombre' =>  {
+          '$concat' =>  [
+            '$nombre',
+            ', ',
+            '$provincia.nombre',
+            ', ',
+            '$departamento.nombre'
+          ]
+        },
+      }
+    },
+    {
+      '$limit' =>  10
+    },
+  ]
+  cursor = Location.collection.aggregate(pipeline)
+end
+
+#list
+aggregation
