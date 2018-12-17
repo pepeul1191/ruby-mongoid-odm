@@ -164,7 +164,13 @@ db.eval('buscarDistrito("5b90a5b1ef627560f1251e4d","La Victoria")');
 
 ### Fuentes
 
-+ 
++ http://mongomapper.com/documentation/getting-started/sinatra.html
++ https://gist.github.com/chischaschos/793861
++ https://github.com/pepeul1191/ruby-ulima-visitas-back
++ https://github.com/mongomapper/mongomapper/issues/230
++ https://speakerdeck.com/jnunemaker/mongomapper-mapping-ruby-to-and-from-mongo?slide=58
++ https://stackoverflow.com/questions/6240738/edit-mongomapper-document
++ https://stackoverflow.com/questions/9531900/setting-up-mongomapper-for-multiple-databases
 
 Thanks/Credits
 
