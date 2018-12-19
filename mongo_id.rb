@@ -7,7 +7,6 @@ Mongoid.configure do |config|
     hosts: ['localhost:27017'],
     database: 'ubicaciones',
   }
-
   config.log_level = :warn
 end
 
@@ -30,4 +29,73 @@ def list
   end
 end
 
-list
+def aggregate
+  search = 'Pueblo'
+  pipeline = [
+    {
+      '$match':  {
+        'tipo':  'distrito'
+      }
+    },
+    {
+      '$lookup':  {
+        'from':  'ubicaciones',
+        'localField':  'provincia_id',
+        'foreignField':  '_id',
+        'as':  'provincia'
+      }
+    },
+    {
+      '$unwind':  {
+        'path':  '$provincia',
+        'preserveNullAndEmptyArrays':  true
+      }
+    },
+    {
+      '$lookup':  {
+        'from':  'ubicaciones',
+        'localField':  'provincia.departamento_id',
+        'foreignField':  '_id',
+        'as':  'departamento'
+      }
+    },
+    {
+      '$unwind':  {
+        'path':  '$departamento',
+        'preserveNullAndEmptyArrays':  true
+      }
+    },
+    {
+      '$match': {
+        'departamento.pais_id':  BSON::ObjectId('5be31406ef095142e0df0a9c'),
+        'nombre':  {
+          '$regex':  search + '.*'
+        }
+      }
+    },
+    {
+      '$project':  {
+        '_id':  '$_id',
+        'nombre':  {
+          '$concat':  [
+            '$nombre',
+            ', ',
+            '$provincia.nombre',
+            ', ',
+            '$departamento.nombre'
+          ]
+        },
+      }
+    },
+    {
+      '$limit':  10
+    },
+  ]
+  cursor = Location.collection.aggregate(pipeline);
+  cursor.each do |document|
+    puts document
+  end
+end
+
+#list
+aggregate

@@ -167,6 +167,7 @@ db.eval('buscarDistrito("5b90a5b1ef627560f1251e4d","La Victoria")');
 + https://stackoverflow.com/questions/11022010/finding-all-documents-in-a-collection-with-mongoid
 + https://docs.mongodb.com/mongoid/master/tutorials/mongoid-installation/
 + https://docs.mongodb.com/mongoid/master/tutorials/mongoid-documents/
++ https://stackoverflow.com/questions/12205650/aggregate-with-mongoid
 
 Thanks/Credits
 

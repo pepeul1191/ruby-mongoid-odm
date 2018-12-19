@@ -1,6 +1,5 @@
-require 'rubygems'
-require 'bundler'
-Bundler.require
+require 'mongo_mapper'
+require 'activemodel-serializers-xml'
 
 MongoMapper.connection = Mongo::Connection.new('127.0.0.1', 27017)
 MongoMapper.database = 'ubicaciones'
@@ -74,7 +73,7 @@ def aggregation
     },
     {
       '$match' => {
-        'departamento.pais_id' =>  BSON::ObjectId.from_string('5b90a5b1ef627560f1251e4d'),
+        'departamento.pais_id' =>  BSON::ObjectId('5be31406ef095142e0df0a9c'),
         'nombre' =>  {
           '$regex' =>  '^' + search
         }
